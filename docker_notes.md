@@ -52,6 +52,13 @@
 3. ```docker build -t <customImageName> <dockerfile path>``` build image from dockerfile
 4. run it ```docker run -it --init --publish <mcPort>:<dockerPort> <customImageName>```
 
+### Bind mount
+means bind local repo with container wrokDir, means whenever changes happen in local file they will be reflect in container.
+When you use a bind mount, a file or directory on the host machine is mounted into a container. The file or directory is referenced by its absolute path on the host machine. 
+- build image
+- run it ```docker run -it --init --p <mcPort>:<dockerPort> -v <sourceDirPath>:<workDir> <customImageName>```
+- eg ```docker run -it --init --p 3002:3000 -v "${pwd}":/developer/nodejs/myserver customImage``` "${pwd}" it will add current working dir(pwd) execute this when we are in myserver dir on terminal
+
 # ubuntu
 1. ```ls```
 2. ```ps aux``` show all process running
