@@ -28,6 +28,9 @@
 17. ```docker run -it --init --publish mcPort:dockerPort customImgName``` to create custom container and ```--publish``` or ```--p```forword docker port on machine port and ```--init``` is for if we want to run container in user interaction means we can stop process by ctrl+c and other function of terminal will work and by closing terminal current process will close, skip for if want process works in background
 18.  ```docker run -it --init --P customImgName``` by ```-P```this will be tunnel to random port on machine with expose port of container. so we have to check port no on ```docker ps```
 19. ```docker system prune -a``` to remove all stopped containers, all networks not in use, all images who has no one containsers associated and all build cache
+20. `docker network ls` to list all network services
+21. `docker volume ls` to list all volumes
+
 
 ### how to create docker image
 1. create ```Dockerfile``` // its better to create file in our working directory
@@ -65,8 +68,19 @@ A Docker volume is an independent file system entirely managed by Docker and exi
 - `docker run -it --init --p <mcPort>:<dockerPort> -v <sourceDirPath>:<workDir> -v <source>:<destination> <customImageName>`  If the “source” is a name, then Docker tries to find this volume or creates one if one cannot be found.
 - eg. `docker run -it --init --p 3002:3000 -v "${pwd}":/developer/nodejs/myserver -v node-module-volume:/developer/nodejs/myserver/node-modules customImage`
 
+### Communication between containers
+- `docker network create <bridgeName` to create new network bridge
+- `docker inspect <bridgeName>` to inspect network bridge\
+- `docker run -it --init --name <serviceName> --network <networkName> --p <mcPort>:<dockerPort> -v <sourceDirPath>:<workDir> -v <source>:<destination> <customImageName>` to add our container in network bridge, so that other container can access this container at http://serviceName.dockerPort
+- eg we have created bridge name `microservices-bridge` and we want connect `API-GATEWAY` service container with `fights-service`, `booking-service` and `notification-service` service container
+     - `docker run -it --init --name API-GATEWAY --p 4000:3000 -v "${pwd}":/developer/nodejs/API-GATEWAY -v node-module-volume:/developer/nodejs/API-GATEWAY/node-modules API-GATEWAY-Img` // service started listening on `4000` on machine and `3000` on container and bridge will forword req to this service if other container route to `API-GATEWAY` to communicate with this containers
+     - `docker run -it --init --name flight-service --p 4001:3000 -v "${pwd}":/developer/nodejs/flight-service -v node-module-volume:/developer/nodejs/flight-service/node-modules flight-service-Img` // service started listening on `4001` on machine and `3000` on container and bridge will forword req to this service if other container route to `flight-service` to communicate with this containers
+     - `docker run -it --init --name booking-service --p 4001:3000 -v "${pwd}":/developer/nodejs/booking-service -v node-module-volume:/developer/nodejs/booking-service/node-modules booking-service-Img` // service started listening on `4002` on machine and `3000` on container and bridge will forword req to this service if other container route to `booking-service` to communicate with this containers
+     - `docker run -it --init --name notification-service --p 4001:3000 -v "${pwd}":/developer/nodejs/notification-service -v node-module-volume:/developer/nodejs/notification-service/node-modules notification-service-Img` // service started listening on `4003` on machine and `3000` on container and bridge will forword req to this service if other container route to `notification-service` to communicate with this containers
+
+
 # ubuntu
-1. ```ls```
+1. ```ls``` list all files and dir
 2. `ls -a` list all files and dir included hidden files too
 3. `ls -lh` to list all files and dir with all details in table format
 4. ```ps aux``` show all process running
