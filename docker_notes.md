@@ -1,8 +1,9 @@
 #         Docker
 
 #### Links
-1. https://hub.docker.com  // for docker images
-2. https://www.docker.com/products/docker-desktop // download docker-desktop and install locally
+1. [for docker images](https://hub.docker.com)
+2. [download docker-desktop and install locally](https://www.docker.com/products/docker-desktop)
+3. [official doc for cli](https://docs.docker.com/engine/reference/run/)
 
 ## commands
 1. ```docker pull ubuntu``` to pull specific img
@@ -41,6 +42,7 @@
       COPY <source of machine> <destination on container>
       RUN <command to run on creating build> //RUN can have multiple times
       ENV <env variables>
+      VOLUME <path of repo to create volume from>
       EXPOSE <port no. to expose> // this will be tunnel to random port on machine
       CMD [<command to run after container bootup>,<>,...] // file can only have one time CMD otherwise last CMD will be executed
       ```
@@ -77,7 +79,54 @@ A Docker volume is an independent file system entirely managed by Docker and exi
      - `docker run -it --init --name flight-service --p 4001:3000 -v "${pwd}":/developer/nodejs/flight-service -v node-module-volume:/developer/nodejs/flight-service/node-modules flight-service-Img` // service started listening on `4001` on machine and `3000` on container and bridge will forword req to this service if other container route to `flight-service` to communicate with this containers
      - `docker run -it --init --name booking-service --p 4001:3000 -v "${pwd}":/developer/nodejs/booking-service -v node-module-volume:/developer/nodejs/booking-service/node-modules booking-service-Img` // service started listening on `4002` on machine and `3000` on container and bridge will forword req to this service if other container route to `booking-service` to communicate with this containers
      - `docker run -it --init --name notification-service --p 4001:3000 -v "${pwd}":/developer/nodejs/notification-service -v node-module-volume:/developer/nodejs/notification-service/node-modules notification-service-Img` // service started listening on `4003` on machine and `3000` on container and bridge will forword req to this service if other container route to `notification-service` to communicate with this containers
-
+### Compose docker containers
+- `docker compose up -d` it start executing docker-compose.yaml file to build img and from that images to container
+-  `docker compose down` Stops containers and removes containers, networks, volumes, and images created by `up`
+eg. to compose api-gateway, flights-service, booking service and notification service dockerfile
+```
+version: "3"
+networks:
+  micro-net:
+    driver: bridge
+volumes:
+  api-gateway-node-modules:
+  booking-service-node-modules:
+  flights-service-node-modules:
+services:
+  api_gateway:
+    build: ./API-Gateway
+    networks:
+      - micro-net
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./API-Gateway:/developer/nodejs/api-gateway
+      - api-gateway-node-modules:/developer/nodejs/api-gateway/node_modules
+  python_service:
+    build: ./python-project
+    networks:
+      - micro-net
+    ports:
+      - "3005:3005"
+  flights_service:
+    build: ./Flights
+    networks:
+      - micro-net
+    ports: 
+      - "3000:3000"
+    volumes:
+      - ./Flights:/developer/nodejs/flights_service
+      - flights-service-node-modules:/developer/nodejs/flights-service/node_modules
+  booking_service:
+    build: ./Flights-Booking-Service
+    networks:
+      - micro-net
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./Flights-Booking-Service:/developer/nodejs/booking_service
+      - booking-service-node-modules:/developer/nodejs/booking-service/node_modules
+```
 
 # ubuntu
 1. ```ls``` list all files and dir
