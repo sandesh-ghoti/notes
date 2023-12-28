@@ -59,16 +59,24 @@ When you use a bind mount, a file or directory on the host machine is mounted in
 - run it ```docker run -it --init --p <mcPort>:<dockerPort> -v <sourceDirPath>:<workDir> <customImageName>```
 - eg ```docker run -it --init --p 3002:3000 -v "${pwd}":/developer/nodejs/myserver customImage``` "${pwd}" it will add current working dir(pwd) execute this when we are in myserver dir on terminal
 
+### Docker volume
+A Docker volume is an independent file system entirely managed by Docker and exists as a normal file or directory on the host, where data is persisted. containers often need to use data beyond their container or share data between containers. While it may be tempting to rely on the host file system, a better solution is to work with persistent data in a container, namely Docker volumes.
+- `docker volume <volumeName>` to create volume
+- `docker run -it --init --p <mcPort>:<dockerPort> -v <sourceDirPath>:<workDir> -v <source>:<destination> <customImageName>`  If the “source” is a name, then Docker tries to find this volume or creates one if one cannot be found.
+- eg. `docker run -it --init --p 3002:3000 -v "${pwd}":/developer/nodejs/myserver -v node-module-volume:/developer/nodejs/myserver/node-modules customImage`
+
 # ubuntu
 1. ```ls```
-2. ```ps aux``` show all process running
-3. ```touch test.txt``` to create new file
-4. ```cat path/filename.ext``` to print content from file
-5. ```pkill processName``` to kill specific process
-6. ```root@user> cat /etc/issue``` to show linux version
-7. ```pwd``` to print current working directory
-8. ```mkdir``` to create dir.
-9. ```rmdir``` to remove dir.
-10. ```rm fileName``` to remove specific file
-11. ```vim fileName``` to create and edit file
-12. ```env``` to print all env variable of system
+2. `ls -a` list all files and dir included hidden files too
+3. `ls -lh` to list all files and dir with all details in table format
+4. ```ps aux``` show all process running
+5. ```touch test.txt``` to create new file
+6. ```cat path/filename.ext``` to print content from file
+7. ```pkill processName``` to kill specific process
+8. ```root@user> cat /etc/issue``` to show linux version
+9. ```pwd``` to print current working directory
+10. ```mkdir``` to create dir.
+11. ```rmdir``` to remove dir.
+12. ```rm fileName``` to remove specific file
+13. ```vim fileName``` to create and edit file
+14. ```env``` to print all env variable of system
