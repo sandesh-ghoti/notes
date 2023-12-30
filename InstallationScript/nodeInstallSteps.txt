@@ -1,0 +1,12 @@
+#ref https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+source ~/.bashrc
+#to check latesh version
+#nvm list-remote
+nvm install lts/iron
+node -v
+# #to use specific version
+#nvm use v20.10.0
+# # to remove nodejs
+#nvm uninstall nodeVersion
+#nvm deactivate
